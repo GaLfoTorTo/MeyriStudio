@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AfroCare{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#fdf6f0',
+              100: '#faebd7',
+              200: '#f5d0b0',
+              300: '#edac7a',
+              400: '#e08048',
+              500: '#d4622a',
+              600: '#c04d20',
+              700: '#5c1f0a',
+              800: '#3d1408',
+              900: '#2b0d05',
+            },
+            surface: '#fdf6f0',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-surface font-sans text-gray-900 min-h-screen">
+  {% block body %}{% endblock %}
+</body>
+</html>
