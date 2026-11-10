@@ -5,16 +5,17 @@ from django.utils import timezone
 
 
 class UsuarioManager(BaseUserManager):
-    def create_user(self, username, password=None, **extra_fields):
-        if not username:
-            raise ValueError('Username é obrigatório')
-        user = self.model(username=username, **extra_fields)
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('E-mail é obrigatório')
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, password=None, **extra_fields):
-        return self.create_user(username, password, **extra_fields)
+    def create_superuser(self, email, password=None, **extra_fields):
+        return self.create_user(email, password, **extra_fields)
 
 
 class Usuario(AbstractBaseUser):
@@ -30,7 +31,7 @@ class Usuario(AbstractBaseUser):
     )
     first_name = models.CharField(max_length=150, blank=True, verbose_name='first name')
     last_name = models.CharField(max_length=150, blank=True, verbose_name='last name')
-    email = models.EmailField(blank=True, verbose_name='email address')
+    email = models.EmailField(unique=True, verbose_name='email address')
     telefone = models.CharField(max_length=20, blank=True)
     foto = models.ImageField(upload_to='fotos/', blank=True, null=True)
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='cliente')
@@ -38,8 +39,8 @@ class Usuario(AbstractBaseUser):
     created_at = models.DateTimeField(default=timezone.now, verbose_name='created at')
     updated_at = models.DateTimeField(default=timezone.now, verbose_name='updated at')
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     objects = UsuarioManager()
 

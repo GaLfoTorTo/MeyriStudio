@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import render
@@ -6,6 +8,11 @@ from django.utils import timezone
 from core.models.agendamento import Agendamento
 from core.models.cliente import Cliente
 from core.models.profissional import Profissional
+
+
+def _semana_do_dia(data):
+    inicio = data - datetime.timedelta(days=data.weekday())
+    return [(inicio + datetime.timedelta(days=i)).day for i in range(7)]
 
 
 @login_required
@@ -37,6 +44,7 @@ def home_view(request):
 
     return render(request, 'core/home.html', {
         'agendamentos_hoje': agendamentos_hoje.order_by('inicio'),
+        'hoje_semana': _semana_do_dia(hoje),
         'proximo': proximo,
         'total_clientes': total_clientes,
         'faturamento_hoje': faturamento_hoje,
