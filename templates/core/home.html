@@ -244,12 +244,16 @@
           </div>
         </div>
         <div class="grid grid-cols-7 gap-1 text-center text-xs">
-          {% for day in "DOM SEG TER QUA QUI SEX SÁB"|split:" " %}
-          <div class="text-gray-400 font-medium py-1">{{ day }}</div>
-          {% endfor %}
-          {% for n in "21 22 23 24 25 26 27"|split:" " %}
+          <div class="text-gray-400 font-medium py-1">DOM</div>
+          <div class="text-gray-400 font-medium py-1">SEG</div>
+          <div class="text-gray-400 font-medium py-1">TER</div>
+          <div class="text-gray-400 font-medium py-1">QUA</div>
+          <div class="text-gray-400 font-medium py-1">QUI</div>
+          <div class="text-gray-400 font-medium py-1">SEX</div>
+          <div class="text-gray-400 font-medium py-1">SÁB</div>
+          {% for n in hoje_semana %}
           <div class="py-1.5 rounded-lg text-sm font-medium
-            {% if n == hoje.day|stringformat:'s' %}bg-brand-800 text-white
+            {% if n == hoje.day %}bg-brand-800 text-white
             {% else %}text-gray-700 hover:bg-brand-50 cursor-pointer{% endif %}">
             {{ n }}
           </div>
