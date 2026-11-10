@@ -18,8 +18,10 @@ def _semana_do_dia(data):
 @login_required
 def home_view(request):
     hoje = timezone.localdate()
+    inicio_dia = timezone.make_aware(datetime.datetime.combine(hoje, datetime.time.min))
+    fim_dia = timezone.make_aware(datetime.datetime.combine(hoje, datetime.time.max))
     agendamentos_hoje = Agendamento.objects.filter(
-        inicio__date=hoje
+        inicio__range=(inicio_dia, fim_dia)
     ).select_related('cliente__usuario', 'profissional__usuario', 'servico')
 
     if request.user.is_profissional():

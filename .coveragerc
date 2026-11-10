@@ -1,0 +1,10 @@
+[run]
+source = core
+omit =
+    core/migrations/*
+    core/tests/*
+    core/management/*
+
+[report]
+show_missing = True
+skip_covered = False
