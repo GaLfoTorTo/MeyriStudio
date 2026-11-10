@@ -1,0 +1,46 @@
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.shortcuts import render
+from django.utils import timezone
+
+from core.models.agendamento import Agendamento
+from core.models.cliente import Cliente
+from core.models.profissional import Profissional
+
+
+@login_required
+def home_view(request):
+    hoje = timezone.localdate()
+    agendamentos_hoje = Agendamento.objects.filter(
+        data_hora_inicio__date=hoje
+    ).select_related('cliente__usuario', 'profissional__usuario', 'servico')
+
+    if request.user.is_profissional():
+        try:
+            profissional = request.user.profissional
+            agendamentos_hoje = agendamentos_hoje.filter(profissional=profissional)
+        except Profissional.DoesNotExist:
+            agendamentos_hoje = Agendamento.objects.none()
+
+    proximo = agendamentos_hoje.filter(
+        status__in=['confirmado', 'pendente'],
+        data_hora_inicio__gte=timezone.now()
+    ).order_by('data_hora_inicio').first()
+
+    total_clientes = Cliente.objects.count()
+    faturamento_hoje = agendamentos_hoje.filter(
+        status='concluido'
+    ).aggregate(total=Sum('valor_total'))['total'] or 0
+
+    concluidos = agendamentos_hoje.filter(status='concluido').count()
+    agendados = agendamentos_hoje.filter(status__in=['confirmado', 'pendente']).count()
+
+    return render(request, 'core/home.html', {
+        'agendamentos_hoje': agendamentos_hoje.order_by('data_hora_inicio'),
+        'proximo': proximo,
+        'total_clientes': total_clientes,
+        'faturamento_hoje': faturamento_hoje,
+        'concluidos': concluidos,
+        'agendados': agendados,
+        'hoje': hoje,
+    })

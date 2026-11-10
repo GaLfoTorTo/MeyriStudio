@@ -36,7 +36,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'afrocare.urls'
+ROOT_URLCONF = 'meyristudio.urls'
 
 TEMPLATES = [
     {
@@ -53,7 +53,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'afrocare.wsgi.application'
+WSGI_APPLICATION = 'meyristudio.wsgi.application'
 
 
 # Database
