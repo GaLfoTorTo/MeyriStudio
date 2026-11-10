@@ -20,7 +20,7 @@ STATUS_COLORS = {
 @login_required
 def agenda_view(request):
     return render(request, 'core/agenda.html', {
-        'servicos': Servico.objects.filter(ativo=True),
+        'servicos': Servico.objects.filter(status=True),
         'profissionais': Profissional.objects.select_related('usuario').all(),
         'clientes': Cliente.objects.select_related('usuario').all(),
         'form': AgendamentoForm(),
@@ -34,10 +34,10 @@ def agendamentos_json(request):
         {
             'id': ag.id,
             'title': f"{ag.cliente.usuario.get_full_name()} — {ag.servico.nome}",
-            'start': ag.data_hora_inicio.isoformat(),
-            'end': ag.data_hora_fim.isoformat(),
+            'start': ag.inicio.isoformat(),
+            'end': ag.fim.isoformat(),
             'color': STATUS_COLORS.get(ag.status, '#6b7280'),
-            'extendedProps': {'status': ag.status, 'valor': str(ag.valor_total)},
+            'extendedProps': {'status': ag.status, 'valor': str(ag.valor)},
         }
         for ag in agendamentos
     ]

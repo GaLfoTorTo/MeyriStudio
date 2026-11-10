@@ -1,4 +1,5 @@
 import django.db.models.deletion
+import django.utils.timezone
 from django.db import migrations, models
 
 
@@ -13,8 +14,15 @@ class Migration(migrations.Migration):
             name='Agendamento',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data_hora_inicio', models.DateTimeField()),
-                ('data_hora_fim', models.DateTimeField()),
+                ('inicio', models.DateTimeField()),
+                ('fim', models.DateTimeField()),
+                ('valor', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('observacoes', models.TextField(blank=True)),
+                ('material', models.CharField(
+                    choices=[('cliente_traz', 'Cliente Traz'), ('salao_fornece', 'Salão Fornece')],
+                    default='cliente_traz',
+                    max_length=20,
+                )),
                 ('status', models.CharField(
                     choices=[
                         ('pendente', 'Pendente'),
@@ -26,15 +34,6 @@ class Migration(migrations.Migration):
                     default='pendente',
                     max_length=20,
                 )),
-                ('valor_total', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('sinal_pago', models.DecimalField(decimal_places=2, default=0, max_digits=10)),
-                ('material', models.CharField(
-                    choices=[('cliente_traz', 'Cliente Traz'), ('salao_fornece', 'Salão Fornece')],
-                    default='cliente_traz',
-                    max_length=20,
-                )),
-                ('observacoes', models.TextField(blank=True)),
-                ('criado_em', models.DateTimeField(auto_now_add=True)),
                 ('cliente', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
                     related_name='agendamentos',
@@ -49,6 +48,8 @@ class Migration(migrations.Migration):
                     on_delete=django.db.models.deletion.CASCADE,
                     to='core.servico',
                 )),
+                ('created_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created at')),
+                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated at')),
             ],
             options={
                 'verbose_name': 'Agendamento',

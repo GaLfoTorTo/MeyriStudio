@@ -10,12 +10,22 @@ from core.models.estoque import Estoque
 
 
 @admin.register(Usuario)
-class UsuarioAdmin(UserAdmin):
-    list_display = ['username', 'email', 'tipo', 'telefone', 'is_active']
-    list_filter = ['tipo', 'is_active']
-    fieldsets = UserAdmin.fieldsets + (
-        ('MeyriStudio', {'fields': ('tipo', 'telefone', 'foto')}),
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ['username', 'email', 'tipo', 'telefone', 'status']
+    list_filter = ['tipo', 'status']
+    search_fields = ['username', 'email', 'first_name', 'last_name']
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Dados pessoais', {'fields': ('first_name', 'last_name', 'email', 'telefone', 'foto')}),
+        ('MeyriStudio', {'fields': ('tipo', 'status')}),
     )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'tipo'),
+        }),
+    )
+    ordering = ['username']
 
 
 admin.site.register(Profissional)

@@ -12,7 +12,7 @@ from core.models.profissional import Profissional
 def home_view(request):
     hoje = timezone.localdate()
     agendamentos_hoje = Agendamento.objects.filter(
-        data_hora_inicio__date=hoje
+        inicio__date=hoje
     ).select_related('cliente__usuario', 'profissional__usuario', 'servico')
 
     if request.user.is_profissional():
@@ -24,19 +24,19 @@ def home_view(request):
 
     proximo = agendamentos_hoje.filter(
         status__in=['confirmado', 'pendente'],
-        data_hora_inicio__gte=timezone.now()
-    ).order_by('data_hora_inicio').first()
+        inicio__gte=timezone.now()
+    ).order_by('inicio').first()
 
     total_clientes = Cliente.objects.count()
     faturamento_hoje = agendamentos_hoje.filter(
         status='concluido'
-    ).aggregate(total=Sum('valor_total'))['total'] or 0
+    ).aggregate(total=Sum('valor'))['total'] or 0
 
     concluidos = agendamentos_hoje.filter(status='concluido').count()
     agendados = agendamentos_hoje.filter(status__in=['confirmado', 'pendente']).count()
 
     return render(request, 'core/home.html', {
-        'agendamentos_hoje': agendamentos_hoje.order_by('data_hora_inicio'),
+        'agendamentos_hoje': agendamentos_hoje.order_by('inicio'),
         'proximo': proximo,
         'total_clientes': total_clientes,
         'faturamento_hoje': faturamento_hoje,

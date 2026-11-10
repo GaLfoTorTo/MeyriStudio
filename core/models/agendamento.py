@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Agendamento(models.Model):
@@ -21,23 +22,19 @@ class Agendamento(models.Model):
         'core.Profissional', on_delete=models.CASCADE, related_name='agendamentos'
     )
     servico = models.ForeignKey('core.Servico', on_delete=models.CASCADE)
-    data_hora_inicio = models.DateTimeField()
-    data_hora_fim = models.DateTimeField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
-    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
-    sinal_pago = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    material = models.CharField(max_length=20, choices=MATERIAL_CHOICES, default='cliente_traz')
+    inicio = models.DateTimeField()
+    fim = models.DateTimeField()
+    valor = models.DecimalField(max_digits=10, decimal_places=2)
     observacoes = models.TextField(blank=True)
-    criado_em = models.DateTimeField(auto_now_add=True)
+    material = models.CharField(max_length=20, choices=MATERIAL_CHOICES, default='cliente_traz')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
+    created_at = models.DateTimeField(default=timezone.now, verbose_name='created at')
+    updated_at = models.DateTimeField(default=timezone.now, verbose_name='updated at')
 
     class Meta:
         verbose_name = 'Agendamento'
         verbose_name_plural = 'Agendamentos'
-        ordering = ['data_hora_inicio']
+        ordering = ['inicio']
 
     def __str__(self):
-        return f"{self.cliente} — {self.servico} em {self.data_hora_inicio:%d/%m/%Y %H:%M}"
-
-    @property
-    def saldo_restante(self):
-        return self.valor_total - self.sinal_pago
+        return f'{self.cliente} — {self.servico} em {self.inicio:%d/%m/%Y %H:%M}'

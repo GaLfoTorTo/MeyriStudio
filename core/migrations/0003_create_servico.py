@@ -1,3 +1,4 @@
+import django.utils.timezone
 from django.db import migrations, models
 
 
@@ -14,9 +15,11 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nome', models.CharField(max_length=100)),
                 ('descricao', models.TextField(blank=True)),
-                ('duracao_horas', models.DecimalField(decimal_places=2, max_digits=4)),
+                ('duracao', models.DecimalField(decimal_places=2, max_digits=4)),
                 ('preco', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('ativo', models.BooleanField(default=True)),
+                ('status', models.BooleanField(default=True)),
+                ('created_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='created at')),
+                ('updated_at', models.DateTimeField(default=django.utils.timezone.now, verbose_name='updated at')),
             ],
             options={
                 'verbose_name': 'Serviço',
